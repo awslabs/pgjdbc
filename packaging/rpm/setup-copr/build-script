@@ -33,10 +33,10 @@ cd "$workdir"
 test -f "$hook_payload" && webhook-checkout "$hook_payload"
 
 # generate source tarball
-./gradlew :postgresql:sourceDistribution -Prelease
+./gradlew :aws-postgresql-jdbc:sourceDistribution -Prelease
 
 project_version=$(grep pgjdbc.version gradle.properties | cut -d "=" -f2-)
-cp pgjdbc/build/distributions/postgresql-$project_version-jdbc-src.tar.gz "$resultdir"
+cp pgjdbc/build/distributions/aws-postgresql-jdbc-$project_version-jdbc-src.tar.gz "$resultdir"
 
 git_rev=$(git rev-parse --short=7 HEAD)
 date_rev=$(date +%Y%m%d_%H%M%S)

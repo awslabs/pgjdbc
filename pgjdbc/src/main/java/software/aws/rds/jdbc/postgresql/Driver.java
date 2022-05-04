@@ -3,11 +3,18 @@
  * See the LICENSE file in the project root for more information.
  */
 
-package org.postgresql;
+/*
+ * AWS JDBC Driver for PostgreSQL
+ * Copyright Amazon.com Inc. or affiliates.
+ * See the LICENSE file in the project root for more information.
+ */
+
+package software.aws.rds.jdbc.postgresql;
 
 import static org.postgresql.util.Util.shadingPrefix;
 import static org.postgresql.util.internal.Nullness.castNonNull;
 
+import org.postgresql.PGProperty;
 import org.postgresql.jdbc.PgConnection;
 import org.postgresql.util.DriverInfo;
 import org.postgresql.util.GT;
@@ -58,17 +65,25 @@ import java.util.logging.Logger;
  * @see org.postgresql.PGConnection
  * @see java.sql.Driver
  */
-public class Driver implements java.sql.Driver {
+public class Driver extends org.postgresql.Driver {
+  public static final String AWS_PROTOCOL = "jdbc:postgresql:aws:";
 
-  private static @Nullable Driver registeredDriver;
-  private static final Logger PARENT_LOGGER = Logger.getLogger(shadingPrefix("org.postgresql"));
-  private static final Logger LOGGER = Logger.getLogger(shadingPrefix("org.postgresql.Driver"));
+  private static software.aws.rds.jdbc.postgresql.Driver registeredDriver;
+  private static final Logger PARENT_LOGGER = Logger.getLogger(shadingPrefix("software.aws.rds.jdbc.postgresql"));
+  private static final Logger LOGGER = Logger.getLogger(shadingPrefix("software.aws.rds.jdbc.postgresql.Driver"));
   private static final SharedTimer SHARED_TIMER = new SharedTimer();
-
 
   // Helper to retrieve default properties from classloader resource
   // properties files.
   private @Nullable Properties defaultProperties;
+
+  static {
+    try {
+      register();
+    } catch (SQLException e) {
+      throw new ExceptionInInitializerError(e);
+    }
+  }
 
   private synchronized Properties getDefaultProperties() throws IOException {
     if (defaultProperties != null) {
@@ -203,7 +218,7 @@ public class Driver implements java.sql.Driver {
     // get defaults
     Properties defaults;
 
-    if (!url.startsWith("jdbc:postgresql:")) {
+    if (!url.startsWith(AWS_PROTOCOL)) {
       return null;
     }
     try {
@@ -438,12 +453,12 @@ public class Driver implements java.sql.Driver {
 
   @Override
   public int getMajorVersion() {
-    return org.postgresql.util.DriverInfo.MAJOR_VERSION;
+    return DriverInfo.MAJOR_VERSION;
   }
 
   @Override
   public int getMinorVersion() {
-    return org.postgresql.util.DriverInfo.MINOR_VERSION;
+    return DriverInfo.MINOR_VERSION;
   }
 
   /**
@@ -496,11 +511,11 @@ public class Driver implements java.sql.Driver {
       urlArgs = url.substring(qPos + 1);
     }
 
-    if (!urlServer.startsWith("jdbc:postgresql:")) {
-      LOGGER.log(Level.FINE, "JDBC URL must start with \"jdbc:postgresql:\" but was: {0}", url);
+    if (!urlServer.startsWith(AWS_PROTOCOL)) {
+      LOGGER.log(Level.FINE, "JDBC URL must start with \"" + AWS_PROTOCOL + "\" but was: {0}", url);
       return null;
     }
-    urlServer = urlServer.substring("jdbc:postgresql:".length());
+    urlServer = urlServer.substring(AWS_PROTOCOL.length());
 
     if (urlServer.equals("//") || urlServer.equals("///")) {
       urlServer = "";
@@ -711,9 +726,9 @@ public class Driver implements java.sql.Driver {
       throw new IllegalStateException(
           "Driver is already registered. It can only be registered once.");
     }
-    Driver registeredDriver = new Driver();
+    software.aws.rds.jdbc.postgresql.Driver registeredDriver = new software.aws.rds.jdbc.postgresql.Driver();
     DriverManager.registerDriver(registeredDriver);
-    Driver.registeredDriver = registeredDriver;
+    software.aws.rds.jdbc.postgresql.Driver.registeredDriver = registeredDriver;
   }
 
   /**

@@ -41,7 +41,7 @@ plugins {
 
 fun reportsForHumans() = !(System.getenv()["CI"]?.toBoolean() ?: props.bool("CI"))
 
-val lastEditYear = 2020 // TODO: by extra(lastEditYear("$rootDir/LICENSE"))
+val lastEditYear = 2022 // TODO: by extra(lastEditYear("$rootDir/LICENSE"))
 
 // Do not enable spotbugs by default. Execute it only when -Pspotbugs is present
 val enableSpotBugs = props.bool("spotbugs", default = false)
@@ -68,7 +68,7 @@ ide {
     // TODO: set copyright to PostgreSQL Global Development Group
     // copyrightToAsf()
     ideaInstructionsUri =
-        uri("https://github.com/pgjdbc/pgjdbc")
+        uri("https://github.com/awslabs/pgjdbc")
     doNotDetectFrameworks("android", "jruby")
 }
 
@@ -120,7 +120,7 @@ releaseParams {
 }
 
 allprojects {
-    group = "org.postgresql"
+    group = "software.aws.rds"
     version = buildVersion
 
     apply(plugin = "com.github.vlsi.gradle-extensions")
@@ -344,9 +344,9 @@ allprojects {
                 docEncoding = "UTF-8"
                 charSet = "UTF-8"
                 encoding = "UTF-8"
-                docTitle = "PostgreSQL JDBC ${project.name} API version ${project.version}"
-                windowTitle = "PostgreSQL JDBC ${project.name} API version ${project.version}"
-                header = "<b>PostgreSQL JDBC</b>"
+                docTitle = "AWS PostgreSQL JDBC ${project.name} API version ${project.version}"
+                windowTitle = "AWS PostgreSQL JDBC ${project.name} API version ${project.version}"
+                header = "<b>AWS PostgreSQL JDBC</b>"
                 bottom =
                     "Copyright &copy; 1997-$lastEditYear PostgreSQL Global Development Group. All Rights Reserved."
                 if (JavaVersion.current() >= JavaVersion.VERSION_1_9) {
@@ -498,6 +498,7 @@ allprojects {
                 resources {
                     // TODO: remove when LICENSE is removed (it is used by Maven build for now)
                     exclude("src/main/resources/META-INF/LICENSE")
+                    exclude("src/main/resources/META-INF/THIRD-PARTY-LICENSES")
                 }
             }
         }
@@ -506,7 +507,7 @@ allprojects {
             configureEach<Jar> {
                 manifest {
                     attributes["Bundle-License"] = "BSD-2-Clause"
-                    attributes["Implementation-Title"] = "PostgreSQL JDBC Driver"
+                    attributes["Implementation-Title"] = "Amazon Web Services (AWS) JDBC Driver for PostgreSQL"
                     attributes["Implementation-Version"] = project.version
                     val jdbcSpec = props.string("jdbc.specification.version")
                     if (jdbcSpec.isNotBlank()) {
@@ -514,8 +515,8 @@ allprojects {
                         attributes["Specification-Version"] = jdbcSpec
                         attributes["Specification-Title"] = "JDBC"
                     }
-                    attributes["Implementation-Vendor"] = "PostgreSQL Global Development Group"
-                    attributes["Implementation-Vendor-Id"] = "org.postgresql"
+                    attributes["Implementation-Vendor"] = "Amazon Web Services (AWS)"
+                    attributes["Implementation-Vendor-Id"] = "software.aws.rds"
                 }
             }
 
@@ -624,7 +625,7 @@ allprojects {
                 // </editor-fold>
                 // <editor-fold defaultstate="collapsed" desc="Configuration of the published pom.xml">
                 create<MavenPublication>(project.name) {
-                    artifactId = project.name
+                    artifactId = (project.findProperty("artifact.id") as? String) ?: project.name
                     version = rootProject.version.toString()
                     from(components["java"])
 
@@ -638,66 +639,32 @@ allprojects {
                     pom {
                         simplifyXml()
                         name.set(
-                            (project.findProperty("artifact.name") as? String) ?: "pgdjbc ${project.name.capitalize()}"
+                            (project.findProperty("artifact.name") as? String) ?: "Amazon Web Services (AWS) JDBC Driver for PostgreSQL"
                         )
-                        description.set(project.description ?: "PostgreSQL JDBC Driver ${project.name.capitalize()}")
-                        inceptionYear.set("1997")
-                        url.set("https://jdbc.postgresql.org")
+                        artifactId = (project.findProperty("artifact.id") as? String) ?: project.name
+                        description.set(project.description ?: "Public preview of the Amazon Web Services (AWS) JDBC Driver for PostgreSQL.")
+                        inceptionYear.set("2020")
+                        url.set("https://github.com/awslabs/pgjdbc/")
+                        //name.set("Amazon Web Services (AWS) JDBC Driver for PostgreSQL")
+                        //description.set("Public preview of the Amazon Web Services (AWS) JDBC Driver for PostgreSQL.")
                         licenses {
                             license {
                                 name.set("BSD-2-Clause")
-                                url.set("https://jdbc.postgresql.org/about/license.html")
-                                comments.set("BSD-2-Clause, copyright PostgreSQL Global Development Group")
-                                distribution.set("repo")
+                                url.set("https://opensource.org/licenses/BSD-2-Clause")
                             }
-                        }
-                        organization {
-                            name.set("PostgreSQL Global Development Group")
-                            url.set("https://jdbc.postgresql.org/")
                         }
                         developers {
                             developer {
-                                id.set("davecramer")
-                                name.set("Dave Cramer")
-                            }
-                            developer {
-                                id.set("jurka")
-                                name.set("Kris Jurka")
-                            }
-                            developer {
-                                id.set("oliver")
-                                name.set("Oliver Jowett")
-                            }
-                            developer {
-                                id.set("ringerc")
-                                name.set("Craig Ringer")
-                            }
-                            developer {
-                                id.set("vlsi")
-                                name.set("Vladimir Sitnikov")
-                            }
-                            developer {
-                                id.set("bokken")
-                                name.set("Brett Okken")
-                            }
-                        }
-                        issueManagement {
-                            system.set("GitHub issues")
-                            url.set("https://github.com/pgjdbc/pgjdbc/issues")
-                        }
-                        mailingLists {
-                            mailingList {
-                                name.set("PostgreSQL JDBC development list")
-                                subscribe.set("https://lists.postgresql.org/")
-                                unsubscribe.set("https://lists.postgresql.org/unsubscribe/")
-                                post.set("pgsql-jdbc@postgresql.org")
-                                archive.set("https://www.postgresql.org/list/pgsql-jdbc/")
+                                id.set("amazonwebservices")
+                                organization.set("Amazon Web Services")
+                                organizationUrl.set("https://aws.amazon.com")
+                                email.set("aws-rds-oss@amazon.com")
                             }
                         }
                         scm {
-                            connection.set("scm:git:https://github.com/pgjdbc/pgjdbc.git")
-                            developerConnection.set("scm:git:https://github.com/pgjdbc/pgjdbc.git")
-                            url.set("https://github.com/pgjdbc/pgjdbc")
+                            connection.set("scm:git:https://github.com/awslabs/pgjdbc.git")
+                            developerConnection.set("scm:git:https://github.com/awslabs/pgjdbc.git")
+                            url.set("https://github.com/awslabs/pgjdbc")
                             tag.set("HEAD")
                         }
                     }
@@ -709,7 +676,7 @@ allprojects {
 }
 
 subprojects {
-    if (project.path.startsWith(":postgresql")) {
+    if (project.path.startsWith(":aws-postgresql-jdbc")) {
         plugins.withId("java") {
             configure<JavaPluginExtension> {
                 val sourceSets: SourceSetContainer by project

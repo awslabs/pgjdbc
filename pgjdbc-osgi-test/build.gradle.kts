@@ -2,7 +2,7 @@ val pgjdbcRepository by configurations.creating {
     isCanBeConsumed = false
     isCanBeResolved = true
     description =
-        "Consumes local maven repository directory that contains the artifacts produced by :postgresql"
+        "Consumes local maven repository directory that contains the artifacts produced by :aws-postgresql-jdbc"
     attributes {
         attribute(Category.CATEGORY_ATTRIBUTE, objects.named("maven-repository"))
         attribute(Bundling.BUNDLING_ATTRIBUTE, objects.named(Bundling.EXTERNAL))
@@ -10,9 +10,9 @@ val pgjdbcRepository by configurations.creating {
 }
 
 dependencies {
-    pgjdbcRepository(project(":postgresql"))
+    pgjdbcRepository(project(":aws-postgresql-jdbc"))
 
-    testImplementation(project(":postgresql"))
+    testImplementation(project(":aws-postgresql-jdbc"))
 
     testImplementation("javax:javaee-api")
     testImplementation("org.osgi:org.osgi.service.jdbc")

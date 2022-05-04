@@ -14,8 +14,8 @@ public final class DriverInfo {
   }
 
   // Driver name
-  public static final String DRIVER_NAME = "PostgreSQL JDBC Driver";
-  public static final String DRIVER_SHORT_NAME = "PgJDBC";
+  public static final String DRIVER_NAME = "Amazon Web Services (AWS) JDBC Driver for PostgreSQL";
+  public static final String DRIVER_SHORT_NAME = "AWSPgJDBC";
   public static final String DRIVER_VERSION = "/*$version$*/";
   public static final String DRIVER_FULL_NAME = DRIVER_NAME + " " + DRIVER_VERSION;
 

@@ -5,6 +5,8 @@
 
 package org.postgresql.xa;
 
+import static org.postgresql.util.Util.shadingPrefix;
+
 import org.postgresql.ds.common.PGObjectFactory;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -30,7 +32,7 @@ public class PGXADataSourceFactory extends PGObjectFactory {
       Hashtable<?, ?> environment) throws Exception {
     Reference ref = (Reference) obj;
     String className = ref.getClassName();
-    if (className.equals("org.postgresql.xa.PGXADataSource")) {
+    if (className.equals(shadingPrefix("org.postgresql.xa.PGXADataSource"))) {
       return loadXADataSource(ref);
     } else {
       return null;

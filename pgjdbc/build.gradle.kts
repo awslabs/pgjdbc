@@ -171,8 +171,8 @@ val shadedLicenseFiles = licensesCopySpec(renderShadedLicense)
 
 tasks.configureEach<Jar> {
     manifest {
-        attributes["Main-Class"] = "org.postgresql.util.PGJDBCMain"
-        attributes["Automatic-Module-Name"] = "org.postgresql.jdbc"
+        attributes["Main-Class"] = "software.aws.rds.jdbc.postgresql.shading.org.postgresql.util.PGJDBCMain"
+        attributes["Automatic-Module-Name"] = "software.aws.rds.jdbc.postgresql"
     }
 }
 
@@ -185,9 +185,10 @@ tasks.shadowJar {
         dependencyLicenses(shadedLicenseFiles)
     }
     listOf(
-            "com.ongres"
+            "com.ongres",
+            "org.postgresql"
     ).forEach {
-        relocate(it, "${project.group}.shaded.$it")
+        relocate(it, "software.aws.rds.jdbc.postgresql.shading.$it")
     }
 }
 
@@ -197,18 +198,18 @@ val osgiJar by tasks.registering(Bundle::class) {
     withConvention(BundleTaskConvention::class) {
         bnd(
             """
-            -exportcontents: !org.postgresql.shaded.*, org.postgresql.*
+            -exportcontents: software.*
             -removeheaders: Created-By
-            Bundle-Description: Java JDBC driver for PostgreSQL database
-            Bundle-DocURL: https://jdbc.postgresql.org/
-            Bundle-Vendor: PostgreSQL Global Development Group
+            Bundle-Description: Amazon Web Services (AWS) JDBC Driver for PostgreSQL
+            Bundle-DocURL: https://github.com/awslabs/pgjdbc
+            Bundle-Vendor: Amazon Web Services (AWS)
             Import-Package: javax.sql, javax.transaction.xa, javax.naming, javax.security.sasl;resolution:=optional, *;resolution:=optional
-            Bundle-Activator: org.postgresql.osgi.PGBundleActivator
-            Bundle-SymbolicName: org.postgresql.jdbc
-            Bundle-Name: PostgreSQL JDBC Driver
-            Bundle-Copyright: Copyright (c) 2003-2020, PostgreSQL Global Development Group
+            Bundle-Activator: software.aws.rds.jdbc.postgresql.shading.org.postgresql.osgi.PGBundleActivator
+            Bundle-SymbolicName: software.aws.rds
+            Bundle-Name: Amazon Web Services (AWS) JDBC Driver for PostgreSQL
+            Bundle-Copyright: Copyright Amazon.com Inc. or affiliates.
             Require-Capability: osgi.ee;filter:="(&(|(osgi.ee=J2SE)(osgi.ee=JavaSE))(version>=1.8))"
-            Provide-Capability: osgi.service;effective:=active;objectClass=org.osgi.service.jdbc.DataSourceFactory;osgi.jdbc.driver.class=org.postgresql.Driver;osgi.jdbc.driver.name=PostgreSQL JDBC Driver
+            Provide-Capability: osgi.service;effective:=active;objectClass=org.osgi.service.jdbc.DataSourceFactory
             """
         )
     }
@@ -218,10 +219,10 @@ karaf {
     features.apply {
         xsdVersion = "1.5.0"
         feature(closureOf<com.github.lburgazzoli.gradle.plugin.karaf.features.model.FeatureDescriptor> {
-            name = "postgresql"
-            description = "PostgreSQL JDBC driver karaf feature"
+            name = "aws-postgresql-jdbc"
+            description = "AWS PostgreSQL JDBC driver karaf feature"
             version = project.version.toString()
-            details = "Java JDBC 4.2 (JRE 8+) driver for PostgreSQL database"
+            details = "Java JDBC 4.2 (JRE 8+) driver for AWS PostgreSQL database"
             feature("transaction-api")
             includeProject = true
             bundle(
@@ -289,6 +290,7 @@ val sourceDistribution by tasks.registering(Tar::class) {
         include("build.properties")
         include("ssltest.properties")
         include("LICENSE")
+        include("THIRD-PARTY-LICENSES")
         include("README.md")
     }
 

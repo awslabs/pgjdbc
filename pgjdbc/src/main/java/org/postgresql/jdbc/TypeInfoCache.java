@@ -5,6 +5,7 @@
 
 package org.postgresql.jdbc;
 
+import static org.postgresql.util.Util.shadingPrefix;
 import static org.postgresql.util.internal.Nullness.castNonNull;
 
 import org.postgresql.core.BaseConnection;
@@ -101,8 +102,8 @@ public class TypeInfoCache implements TypeInfo {
       {"timestamptz", Oid.TIMESTAMPTZ, Types.TIMESTAMP, "java.sql.Timestamp",
           Oid.TIMESTAMPTZ_ARRAY},
       {"refcursor", Oid.REF_CURSOR, Types.REF_CURSOR, "java.sql.ResultSet", Oid.REF_CURSOR_ARRAY},
-      {"json", Oid.JSON, Types.OTHER, "org.postgresql.util.PGobject", Oid.JSON_ARRAY},
-      {"point", Oid.POINT, Types.OTHER, "org.postgresql.geometric.PGpoint", Oid.POINT_ARRAY}
+      {"json", Oid.JSON, Types.OTHER, shadingPrefix("org.postgresql.util.PGobject"), Oid.JSON_ARRAY},
+      {"point", Oid.POINT, Types.OTHER, shadingPrefix("org.postgresql.geometric.PGpoint"), Oid.POINT_ARRAY}
   };
 
   /**

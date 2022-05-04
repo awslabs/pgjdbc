@@ -5,6 +5,8 @@
 
 package org.postgresql.core;
 
+import static org.postgresql.util.Util.shadingPrefix;
+
 import org.postgresql.PGProperty;
 import org.postgresql.ssl.LibPQFactory;
 import org.postgresql.util.GT;
@@ -56,8 +58,8 @@ public class SocketFactoryFactory {
   public static SSLSocketFactory getSslSocketFactory(Properties info) throws PSQLException {
     String classname = PGProperty.SSL_FACTORY.get(info);
     if (classname == null
-        || "org.postgresql.ssl.jdbc4.LibPQFactory".equals(classname)
-        || "org.postgresql.ssl.LibPQFactory".equals(classname)) {
+        || shadingPrefix("org.postgresql.ssl.jdbc4.LibPQFactory").equals(classname)
+        || shadingPrefix("org.postgresql.ssl.LibPQFactory").equals(classname)) {
       return new LibPQFactory(info);
     }
     try {

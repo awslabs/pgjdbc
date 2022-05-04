@@ -5,6 +5,7 @@
 
 package org.postgresql.ds.common;
 
+import static org.postgresql.util.Util.shadingPrefix;
 import static org.postgresql.util.internal.Nullness.castNonNull;
 
 import org.postgresql.PGProperty;
@@ -67,7 +68,7 @@ public abstract class BaseDataSource implements CommonDataSource, Referenceable 
    */
   static {
     try {
-      Class.forName("org.postgresql.Driver");
+      Class.forName(shadingPrefix("org.postgresql.Driver"));
     } catch (ClassNotFoundException e) {
       throw new IllegalStateException(
         "BaseDataSource is unable to load org.postgresql.Driver. Please check if you have proper PostgreSQL JDBC Driver jar on the classpath",

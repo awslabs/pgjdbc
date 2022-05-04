@@ -48,7 +48,7 @@ e.g., when building pgjdbc for distributions, the pgjdbc Gradle build provides a
 source release artifact `*-src.tar.gz` - a Maven based project.
 The Maven based project contains a version of the JDBC driver with complete functionality,
 which can be used in production and is still validly buildable within the Maven build environment.
-The Maven-based project is created with **gradlew -d :postgresql:sourceDistribution -Prelease**.
+The Maven-based project is created with **gradlew -d :aws-postgresql-jdbc:sourceDistribution -Prelease**.
 The produced `*-src.tar.gz` can be then found in `pgjdbc/build/distributions/` directory.
 JDBC driver can be built from the Maven-based project with **mvn package** or,
 when the tests are to be skipped, with **mvn -DskipTests package**.

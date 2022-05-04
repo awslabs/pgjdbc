@@ -6,6 +6,7 @@
 
 package org.postgresql.core.v3;
 
+import static org.postgresql.util.Util.shadingPrefix;
 import static org.postgresql.util.internal.Nullness.castNonNull;
 
 import org.postgresql.PGProperty;
@@ -83,12 +84,12 @@ public class ConnectionFactoryImpl extends ConnectionFactory {
       boolean enableNegotiate) {
     try {
       @SuppressWarnings("unchecked")
-      Class<ISSPIClient> c = (Class<ISSPIClient>) Class.forName("org.postgresql.sspi.SSPIClient");
+      Class<ISSPIClient> c = (Class<ISSPIClient>) Class.forName(shadingPrefix("org.postgresql.sspi.SSPIClient"));
       return c.getDeclaredConstructor(PGStream.class, String.class, boolean.class)
           .newInstance(pgStream, spnServiceClass, enableNegotiate);
     } catch (Exception e) {
       // This catched quite a lot exceptions, but until Java 7 there is no ReflectiveOperationException
-      throw new IllegalStateException("Unable to load org.postgresql.sspi.SSPIClient."
+      throw new IllegalStateException("Unable to load " + shadingPrefix("org.postgresql.sspi.SSPIClient") + "."
           + " Please check that SSPIClient is included in your pgjdbc distribution.", e);
     }
   }
