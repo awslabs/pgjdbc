@@ -21,7 +21,7 @@ Most people do not need to compile PgJDBC. You can download the precompiled driv
 ### Maven Central
 You can search on The Central Repository with GroupId and ArtifactId [![Maven Search](https://img.shields.io/badge/software.aws.rds-aws--postgresql--jdbc-yellow.svg)][mvn-search] for:
 
-[![Java 8](https://img.shields.io/badge/Java_8-42.3.1-blue.svg)][mvn-jre8]
+[![Java 8](https://img.shields.io/badge/Java_8-0.2.0-blue.svg)][mvn-jre8]
 ```xml
 <dependency>
     <groupId>software.aws.rds</groupId>
