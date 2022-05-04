@@ -1266,13 +1266,18 @@ public abstract class BaseDataSource implements CommonDataSource, Referenceable 
   }
 
   /**
+   * @return {@link DriverManager} supported driver protocol
+   */
+  protected String getDriverProtocol() { return "jdbc:postgresql://"; }
+
+  /**
    * Generates a {@link DriverManager} URL from the other properties supplied.
    *
    * @return {@link DriverManager} URL from the other properties supplied
    */
   public String getUrl() {
     StringBuilder url = new StringBuilder(100);
-    url.append("jdbc:postgresql://");
+    url.append(getDriverProtocol());
     for (int i = 0; i < serverNames.length; i++) {
       if (i > 0) {
         url.append(",");

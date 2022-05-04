@@ -1,17 +1,14 @@
 <img height="90" alt="Slonik Duke" align="right" src="docs/media/img/slonik_duke.png" />
 
-# PostgreSQL JDBC Driver
+# Amazon Web Services (AWS) JDBC Driver for PostgreSQL
 
-PostgreSQL JDBC Driver (PgJDBC for short) allows Java programs to connect to a PostgreSQL database using standard, database independent Java code. Is an open source JDBC driver written in Pure Java (Type 4), and communicates in the PostgreSQL native network protocol.
+The Amazon Web Services (AWS) JDBC Driver for PostgreSQL allows Java programs to connect to a PostgreSQL database using standard, database independent Java code. Is an open source JDBC driver written in Pure Java (Type 4), and communicates in the PostgreSQL native network protocol.
 
 ### Status
-[![Build status](https://ci.appveyor.com/api/projects/status/d8ucmegnmourohwu/branch/master?svg=true)](https://ci.appveyor.com/project/davecramer/pgjdbc/branch/master)
-[![Build Status](https://travis-ci.com/pgjdbc/pgjdbc.svg?branch=master)](https://travis-ci.com/pgjdbc/pgjdbc)
-[![codecov.io](http://codecov.io/github/pgjdbc/pgjdbc/coverage.svg?branch=master)](http://codecov.io/github/pgjdbc/pgjdbc?branch=master)
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.postgresql/postgresql/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.postgresql/postgresql)
-[![Javadocs](http://javadoc.io/badge/org.postgresql/postgresql.svg)](http://javadoc.io/doc/org.postgresql/postgresql)
+[![Build Status](https://github.com/awslabs/pgjdbc/workflows/CI/badge.svg?kill_cache=1)](https://github.com/awslabs/pgjdbc/actions?query=workflow%3A%22dev-CI%22)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/software.aws.rds/aws-postgresql-jdbc/badge.svg?kill_cache=1)](https://maven-badges.herokuapp.com/maven-central/software.aws.rds/aws-postgresql-jdbc)
+[![Javadoc](https://javadoc.io/badge2/software.aws.rds/aws-postgresql-jdbc/javadoc.svg?kill_cache=1)](https://javadoc.io/doc/software.aws.rds/aws-postgresql-jdbc)
 [![License](https://img.shields.io/badge/License-BSD--2--Clause-blue.svg)](https://opensource.org/licenses/BSD-2-Clause)
-[![Join the chat at https://gitter.im/pgjdbc/pgjdbc](https://badges.gitter.im/pgjdbc/pgjdbc.svg)](https://gitter.im/pgjdbc/pgjdbc?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 ## Supported PostgreSQL and Java versions
 The current version of the driver should be compatible with **PostgreSQL 8.4 and higher** using the version 3.0 of the protocol and **Java 8** (JDBC 4.2) or above. Unless you have unusual requirements (running old applications or JVMs), this is the driver you should be using.
@@ -22,14 +19,14 @@ PgJDBC regression tests are run against all PostgreSQL versions since 9.1, inclu
 Most people do not need to compile PgJDBC. You can download the precompiled driver (jar) from the [PostgreSQL JDBC site](https://jdbc.postgresql.org/download.html) or using your chosen dependency management tool:
 
 ### Maven Central
-You can search on The Central Repository with GroupId and ArtifactId [![Maven Search](https://img.shields.io/badge/org.postgresql-postgresql-yellow.svg)][mvn-search] for:
+You can search on The Central Repository with GroupId and ArtifactId [![Maven Search](https://img.shields.io/badge/software.aws.rds-aws--postgresql--jdbc-yellow.svg)][mvn-search] for:
 
 [![Java 8](https://img.shields.io/badge/Java_8-42.3.1-blue.svg)][mvn-jre8]
 ```xml
 <dependency>
-    <groupId>org.postgresql</groupId>
-    <artifactId>postgresql</artifactId>
-    <version>42.3.1</version>
+    <groupId>software.aws.rds</groupId>
+    <artifactId>aws-postgresql-jdbc</artifactId>
+    <version>0.2.0</version>
 </dependency>
 ```
 
@@ -37,12 +34,12 @@ You can search on The Central Repository with GroupId and ArtifactId [![Maven Se
 [mvn-jre8]: https://search.maven.org/artifact/org.postgresql/postgresql/42.3.1/jar
 
 #### Development snapshots
-Snapshot builds (builds from `master` branch) are also deployed to Maven Central, so you can test current development version (test some bugfix) using:
+Snapshot builds (builds from `dev` branch) are also deployed to Maven Central, so you can test current development version (test some bugfix) using:
 ```xml
 <dependency>
-  <groupId>org.postgresql</groupId>
-  <artifactId>postgresql</artifactId>
-  <version>42.3.2-SNAPSHOT</version>
+  <groupId>software.aws.rds</groupId>
+  <artifactId>aws-postgresql-jdbc</artifactId>
+  <version>0.2.1-SNAPSHOT</version>
 </dependency>
 ```
 
@@ -56,29 +53,29 @@ For more information you can read [the PgJDBC driver documentation](https://jdbc
 
 | Implements                          | Class                                          |
 | ----------------------------------- | ---------------------------------------------- |
-| java.sql.Driver                     | **org.postgresql.Driver**                      |
-| javax.sql.DataSource                | org.postgresql.ds.PGSimpleDataSource           |
-| javax.sql.ConnectionPoolDataSource  | org.postgresql.ds.PGConnectionPoolDataSource   |
-| javax.sql.XADataSource              | org.postgresql.xa.PGXADataSource               |
+| java.sql.Driver                     | **software.aws.rds.jdbc.postgresql.Driver**                      |
+| javax.sql.DataSource                | software.aws.rds.jdbc.postgresql.ds.PGSimpleDataSource           |
+| javax.sql.ConnectionPoolDataSource  | software.aws.rds.jdbc.postgresql.ds.PGConnectionPoolDataSource   |
+| javax.sql.XADataSource              | software.aws.rds.jdbc.postgresql.xa.PGXADataSource               |
 
 ### Building the Connection URL
 The driver recognises JDBC URLs of the form:
 ```
-jdbc:postgresql:database
-jdbc:postgresql:
-jdbc:postgresql://host/database
-jdbc:postgresql://host/
-jdbc:postgresql://host:port/database
-jdbc:postgresql://host:port/
-jdbc:postgresql://?service=myservice
+jdbc:postgresql:aws:database
+jdbc:postgresql:aws:
+jdbc:postgresql:aws://host/database
+jdbc:postgresql:aws://host/
+jdbc:postgresql:aws://host:port/database
+jdbc:postgresql:aws://host:port/
+jdbc:postgresql:aws://?service=myservice
 ```
 The general format for a JDBC URL for connecting to a PostgreSQL server is as follows, with items in square brackets ([ ]) being optional:
 ```
-jdbc:postgresql:[//host[:port]/][database][?property1=value1[&property2=value2]...]
+jdbc:postgresql:aws:[//host[:port]/][database][?property1=value1[&property2=value2]...]
 ```
 where:
  * **jdbc:postgresql:** (Required) is known as the sub-protocol and is constant.
- * **host** (Optional) is the server address to connect. This could be a DNS or IP address, or it could be *localhost* or *127.0.0.1* for the local computer. To specify an IPv6 address your must enclose the host parameter with square brackets (jdbc:postgresql://[::1]:5740/accounting). Defaults to `localhost`.
+ * **host** (Optional) is the server address to connect. This could be a DNS or IP address, or it could be *localhost* or *127.0.0.1* for the local computer. To specify an IPv6 address your must enclose the host parameter with square brackets (jdbc:postgresql:aws://[::1]:5740/accounting). Defaults to `localhost`.
  * **port** (Optional) is the port number listening on the host. Defaults to `5432`.
  * **database** (Optional) is the database name. Defaults to the same name as the *user name* used in the connection.
  * **propertyX** (Optional) is one or more option connection properties. For more information see *Connection properties*.
