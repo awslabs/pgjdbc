@@ -1,5 +1,7 @@
 package software.aws.rds.jdbc.postgresql.ds;
 
+import javax.naming.Reference;
+
 import java.sql.DriverManager;
 
 /**
@@ -30,5 +32,15 @@ public class PGConnectionPoolDataSource extends org.postgresql.ds.PGConnectionPo
    */
   @Override
   protected String getDriverProtocol() { return "jdbc:postgresql:aws://"; }
+
+  /**
+   * Generates a reference using the appropriate object factory.
+   *
+   * @return reference using the appropriate object factory
+   */
+  @Override
+  protected Reference createReference() {
+    return new Reference(getClass().getName(), software.aws.rds.jdbc.postgresql.ds.common.PGObjectFactory.class.getName(), null);
+  }
 
 }

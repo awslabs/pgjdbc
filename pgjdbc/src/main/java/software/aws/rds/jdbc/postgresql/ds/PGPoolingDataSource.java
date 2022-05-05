@@ -1,5 +1,7 @@
 package software.aws.rds.jdbc.postgresql.ds;
 
+import javax.naming.Reference;
+
 /**
  * DataSource for {@link software.aws.rds.jdbc.postgresql.Driver} similar
  * to {@link org.postgresql.ds.PGPoolingDataSource}
@@ -36,6 +38,16 @@ public class PGPoolingDataSource extends org.postgresql.ds.PGPoolingDataSource {
   @Override
   protected org.postgresql.ds.PGConnectionPoolDataSource createConnectionPool() {
     return new software.aws.rds.jdbc.postgresql.ds.PGConnectionPoolDataSource();
+  }
+
+  /**
+   * Generates a reference using the appropriate object factory.
+   *
+   * @return reference using the appropriate object factory
+   */
+  @Override
+  protected Reference createReference() {
+    return new Reference(getClass().getName(), software.aws.rds.jdbc.postgresql.ds.common.PGObjectFactory.class.getName(), null);
   }
 
 }
