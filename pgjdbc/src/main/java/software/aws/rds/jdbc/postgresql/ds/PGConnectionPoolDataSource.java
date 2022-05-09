@@ -1,8 +1,16 @@
+/*
+ * Copyright (c) 2003, PostgreSQL Global Development Group
+ * See the LICENSE file in the project root for more information.
+ */
+
 package software.aws.rds.jdbc.postgresql.ds;
+
+import org.postgresql.PGProperty;
 
 import javax.naming.Reference;
 
 import java.sql.DriverManager;
+import java.util.Properties;
 
 /**
  * DataSource for {@link software.aws.rds.jdbc.postgresql.Driver} similar
@@ -32,6 +40,26 @@ public class PGConnectionPoolDataSource extends org.postgresql.ds.PGConnectionPo
    */
   @Override
   protected String getDriverProtocol() { return "jdbc:postgresql:aws://"; }
+
+  /**
+   * Sets properties from a {@link DriverManager} URL.
+   *
+   * @param url properties to set
+   */
+  @Override
+  public void setUrl(String url) {
+
+    Properties p = software.aws.rds.jdbc.postgresql.Driver.parseURL(url, null);
+
+    if (p == null) {
+      throw new IllegalArgumentException("URL invalid " + url);
+    }
+    for (PGProperty property : PGProperty.values()) {
+      if (!this.properties.containsKey(property.getName())) {
+        setProperty(property, property.get(p));
+      }
+    }
+  }
 
   /**
    * Generates a reference using the appropriate object factory.

@@ -290,8 +290,12 @@ public class TestUtil {
     return new File(certdir, name).getAbsolutePath();
   }
 
-  public static void initDriver() {
+  public static void initDriver() throws SQLException {
     synchronized (TestUtil.class) {
+      if (!org.postgresql.Driver.isRegistered()) {
+        org.postgresql.Driver.register();
+      }
+
       if (initialized) {
         return;
       }

@@ -1,6 +1,16 @@
+/*
+ * Copyright (c) 2003, PostgreSQL Global Development Group
+ * See the LICENSE file in the project root for more information.
+ */
+
 package software.aws.rds.jdbc.postgresql.ds;
 
+import org.postgresql.PGProperty;
+
 import javax.naming.Reference;
+
+import java.sql.DriverManager;
+import java.util.Properties;
 
 /**
  * DataSource for {@link software.aws.rds.jdbc.postgresql.Driver} similar
@@ -27,6 +37,32 @@ public class PGPoolingDataSource extends org.postgresql.ds.PGPoolingDataSource {
       throw new IllegalStateException(
           "PGPoolingDataSource is unable to load software.aws.rds.jdbc.postgresql.Driver. Please check if you have proper AWS PostgreSQL JDBC Driver jar on the classpath",
           e);
+    }
+  }
+
+  /**
+   * @return {@link DriverManager} supported driver protocol
+   */
+  @Override
+  protected String getDriverProtocol() { return "jdbc:postgresql:aws://"; }
+
+  /**
+   * Sets properties from a {@link DriverManager} URL.
+   *
+   * @param url properties to set
+   */
+  @Override
+  public void setUrl(String url) {
+
+    Properties p = software.aws.rds.jdbc.postgresql.Driver.parseURL(url, null);
+
+    if (p == null) {
+      throw new IllegalArgumentException("URL invalid " + url);
+    }
+    for (PGProperty property : PGProperty.values()) {
+      if (!this.properties.containsKey(property.getName())) {
+        setProperty(property, property.get(p));
+      }
     }
   }
 

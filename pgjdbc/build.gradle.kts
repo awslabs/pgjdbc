@@ -204,7 +204,7 @@ val osgiJar by tasks.registering(Bundle::class) {
             Bundle-DocURL: https://github.com/awslabs/pgjdbc
             Bundle-Vendor: Amazon Web Services (AWS)
             Import-Package: javax.sql, javax.transaction.xa, javax.naming, javax.security.sasl;resolution:=optional, *;resolution:=optional
-            Bundle-Activator: software.aws.rds.jdbc.postgresql.shading.org.postgresql.osgi.PGBundleActivator
+            Bundle-Activator: software.aws.rds.jdbc.postgresql.osgi.PGBundleActivator
             Bundle-SymbolicName: software.aws.rds
             Bundle-Name: Amazon Web Services (AWS) JDBC Driver for PostgreSQL
             Bundle-Copyright: Copyright Amazon.com Inc. or affiliates.

@@ -206,7 +206,7 @@ public class DatabaseMetaDataPropertiesTest {
     DatabaseMetaData dbmd = con.getMetaData();
     assertNotNull(dbmd);
 
-    assertEquals("PostgreSQL JDBC Driver", dbmd.getDriverName());
+    assertEquals("Amazon Web Services (AWS) JDBC Driver for PostgreSQL", dbmd.getDriverName());
     assertEquals(org.postgresql.util.DriverInfo.DRIVER_VERSION, dbmd.getDriverVersion());
     assertEquals(new org.postgresql.Driver().getMajorVersion(), dbmd.getDriverMajorVersion());
     assertEquals(new org.postgresql.Driver().getMinorVersion(), dbmd.getDriverMinorVersion());

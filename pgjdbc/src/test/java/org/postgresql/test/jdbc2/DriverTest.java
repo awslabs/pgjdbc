@@ -12,6 +12,8 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import org.junit.Ignore;
+
 import org.postgresql.Driver;
 import org.postgresql.PGEnvironment;
 import org.postgresql.PGProperty;
@@ -450,7 +452,12 @@ public class DriverTest {
     con.close();
   }
 
+  /**
+   * The test is disabled since org.postgresql.Driver doesn't support auto registration.
+   * @see software.aws.rds.jdbc.postgresql.test.jdbc2.DriverTest#testRegistration
+   */
   @Test
+  @Ignore
   public void testRegistration() throws Exception {
     TestUtil.initDriver();
 

@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2003, PostgreSQL Global Development Group
+ * See the LICENSE file in the project root for more information.
+ */
+
 package software.aws.rds.jdbc.postgresql.ds.common;
 
 import static org.postgresql.util.Util.shadingPrefix;
