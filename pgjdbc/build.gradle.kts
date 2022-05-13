@@ -54,6 +54,9 @@ dependencies {
     shaded(platform(project(":bom")))
     shaded("com.ongres.scram:client")
 
+    compileOnly("software.amazon.awssdk:rds:2.17.189")
+    compileOnly("software.amazon.awssdk:auth:2.17.189")
+
     implementation("org.checkerframework:checker-qual")
     testImplementation("se.jiderhamn:classloader-leak-test-framework")
 }
