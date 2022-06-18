@@ -182,6 +182,7 @@ allprojects {
             testImplementation("uk.org.webcompere:system-stubs-jupiter")
             testImplementation("org.junit.jupiter:junit-jupiter-params")
             testImplementation("org.hamcrest:hamcrest")
+            testImplementation("org.mockito:mockito-core:4.6.1")
             testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
             if (project.props.bool("junit4", default = true)) {
                 // Allow projects to opt-out of junit dependency, so they can be JUnit5-only
@@ -645,8 +646,8 @@ allprojects {
                         description.set(project.description ?: "Public preview of the Amazon Web Services (AWS) JDBC Driver for PostgreSQL.")
                         inceptionYear.set("2020")
                         url.set("https://github.com/awslabs/pgjdbc/")
-                        //name.set("Amazon Web Services (AWS) JDBC Driver for PostgreSQL")
-                        //description.set("Public preview of the Amazon Web Services (AWS) JDBC Driver for PostgreSQL.")
+                        // name.set("Amazon Web Services (AWS) JDBC Driver for PostgreSQL")
+                        // description.set("Public preview of the Amazon Web Services (AWS) JDBC Driver for PostgreSQL.")
                         licenses {
                             license {
                                 name.set("BSD-2-Clause")
