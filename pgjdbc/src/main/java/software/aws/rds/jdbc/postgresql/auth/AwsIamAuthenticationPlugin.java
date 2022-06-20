@@ -5,8 +5,8 @@ import org.postgresql.plugin.AuthenticationPlugin;
 import org.postgresql.plugin.AuthenticationRequestType;
 import org.postgresql.util.GT;
 import org.postgresql.util.PSQLException;
-
 import org.checkerframework.checker.nullness.qual.Nullable;
+
 import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.rds.RdsUtilities;
@@ -154,7 +154,7 @@ public class AwsIamAuthenticationPlugin implements AuthenticationPlugin {
     return regionOptional.get();
   }
 
-  public static class TokenInfo {
+  static class TokenInfo {
 
     private final String token;
     private final Instant expiration;
