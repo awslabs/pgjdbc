@@ -23,11 +23,10 @@ import java.util.Properties;
 public class AwsIamAuthenticationPluginTest {
 
   private Properties properties;
-  private AwsIamAuthenticationPlugin plugin;
+  private AwsIamAuthenticationPlugin targetPlugin;
   private static final String TEST_USER = "testUser";
   private static final String TEST_HOST = "test.user.us-east-2.rds.amazonaws.com";
   private static final String TEST_TOKEN = "testToken";
-  private static final String TOKEN_FIELD = "tokenCache";
   private static final String GENERATED_TOKEN = "generatedToken";
   private static final String CACHE_KEY = "us-east-2:test.user.us-east-2.rds.amazonaws.com:5342:testUser";
 
@@ -36,25 +35,25 @@ public class AwsIamAuthenticationPluginTest {
     properties = new Properties();
     properties.setProperty(PGProperty.USER.getName(), TEST_USER);
     properties.setProperty(PGProperty.PG_HOST.getName(), TEST_HOST);
-    plugin = new AwsIamAuthenticationPlugin(properties);
+    targetPlugin = new AwsIamAuthenticationPlugin(properties);
   }
 
   @Test
   public void testGetPasswordWithWrongType() throws PSQLException {
-    assertThrows(PSQLException.class, () -> plugin.getPassword(AuthenticationRequestType.MD5_PASSWORD));
+    assertThrows(PSQLException.class, () -> targetPlugin.getPassword(AuthenticationRequestType.MD5_PASSWORD));
   }
 
   @Test
   public void testGetPasswordValidTokenInCache() throws PSQLException {
     AwsIamAuthenticationPlugin.tokenCache.put(CACHE_KEY, new AwsIamAuthenticationPlugin.TokenInfo(TEST_TOKEN, Instant.now().plusMillis(300000)));
-    char[] actualResult = plugin.getPassword(AuthenticationRequestType.CLEARTEXT_PASSWORD);
+    char[] actualResult = targetPlugin.getPassword(AuthenticationRequestType.CLEARTEXT_PASSWORD);
     assertArrayEquals(TEST_TOKEN.toCharArray(), actualResult);
   }
 
   @Test
   public void testGetPasswordExpiredTokenInCache() throws PSQLException {
     AwsIamAuthenticationPlugin.tokenCache.put(CACHE_KEY, new AwsIamAuthenticationPlugin.TokenInfo(TEST_TOKEN, Instant.now().minusMillis(300000)));
-    AwsIamAuthenticationPlugin spyPlugin = Mockito.spy(plugin);
+    AwsIamAuthenticationPlugin spyPlugin = Mockito.spy(targetPlugin);
     when(spyPlugin.generateAuthenticationToken(TEST_USER, TEST_HOST, 5342, Region.US_EAST_2)).thenReturn(GENERATED_TOKEN);
     char[] actualResult = spyPlugin.getPassword(AuthenticationRequestType.CLEARTEXT_PASSWORD);
     assertArrayEquals(GENERATED_TOKEN.toCharArray(), actualResult);
