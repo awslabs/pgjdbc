@@ -18,11 +18,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import software.amazon.awssdk.regions.Region;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.time.Instant;
 import java.util.Properties;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class AwsIamAuthenticationPluginTest {
 
@@ -49,37 +46,15 @@ public class AwsIamAuthenticationPluginTest {
   }
 
   @Test
-  public void testGetPasswordValidTokenInCache() throws PSQLException, NoSuchFieldException,
-      IllegalAccessException {
-    plugin.getClass().getDeclaredField(TOKEN_FIELD).setAccessible(true);
-    Field tokenField = plugin.getClass().getDeclaredField(TOKEN_FIELD);
-    tokenField.setAccessible(true);
-    Field modifiersField = Field.class.getDeclaredField("modifiers");
-    modifiersField.setAccessible(true);
-    modifiersField.setInt(tokenField, tokenField.getModifiers() & ~Modifier.FINAL);
-    ConcurrentHashMap<String, AwsIamAuthenticationPlugin.TokenInfo> value = new ConcurrentHashMap<>();
-    value.clear();
-    value.put(CACHE_KEY, new AwsIamAuthenticationPlugin.TokenInfo(TEST_TOKEN, Instant.now().plusMillis(300000)));
-    tokenField.set(plugin, value);
-
+  public void testGetPasswordValidTokenInCache() throws PSQLException {
+    AwsIamAuthenticationPlugin.tokenCache.put(CACHE_KEY, new AwsIamAuthenticationPlugin.TokenInfo(TEST_TOKEN, Instant.now().plusMillis(300000)));
     char[] actualResult = plugin.getPassword(AuthenticationRequestType.CLEARTEXT_PASSWORD);
     assertArrayEquals(TEST_TOKEN.toCharArray(), actualResult);
   }
 
   @Test
-  public void testGetPasswordExpiredTokenInCache() throws PSQLException, NoSuchFieldException,
-      IllegalAccessException {
-    plugin.getClass().getDeclaredField(TOKEN_FIELD).setAccessible(true);
-    Field tokenField = plugin.getClass().getDeclaredField(TOKEN_FIELD);
-    tokenField.setAccessible(true);
-    Field modifiersField = Field.class.getDeclaredField("modifiers");
-    modifiersField.setAccessible(true);
-    modifiersField.setInt(tokenField, tokenField.getModifiers() & ~Modifier.FINAL);
-    ConcurrentHashMap<String, AwsIamAuthenticationPlugin.TokenInfo> value = new ConcurrentHashMap<>();
-    value.clear();
-    value.put(CACHE_KEY, new AwsIamAuthenticationPlugin.TokenInfo(TEST_TOKEN, Instant.now().minusMillis(300000)));
-    tokenField.set(plugin, value);
-
+  public void testGetPasswordExpiredTokenInCache() throws PSQLException {
+    AwsIamAuthenticationPlugin.tokenCache.put(CACHE_KEY, new AwsIamAuthenticationPlugin.TokenInfo(TEST_TOKEN, Instant.now().minusMillis(300000)));
     AwsIamAuthenticationPlugin spyPlugin = Mockito.spy(plugin);
     when(spyPlugin.generateAuthenticationToken(TEST_USER, TEST_HOST, 5342, Region.US_EAST_2)).thenReturn(GENERATED_TOKEN);
     char[] actualResult = spyPlugin.getPassword(AuthenticationRequestType.CLEARTEXT_PASSWORD);
@@ -87,18 +62,8 @@ public class AwsIamAuthenticationPluginTest {
   }
 
   @Test
-  public void testGetPasswordGenerateToken() throws PSQLException, NoSuchFieldException,
-      IllegalAccessException {
-    plugin.getClass().getDeclaredField(TOKEN_FIELD).setAccessible(true);
-    Field tokenField = plugin.getClass().getDeclaredField(TOKEN_FIELD);
-    tokenField.setAccessible(true);
-    Field modifiersField = Field.class.getDeclaredField("modifiers");
-    modifiersField.setAccessible(true);
-    modifiersField.setInt(tokenField, tokenField.getModifiers() & ~Modifier.FINAL);
-    ConcurrentHashMap<String, AwsIamAuthenticationPlugin.TokenInfo> value = new ConcurrentHashMap<>();
-    value.clear();
-    tokenField.set(plugin, value);
-
+  public void testGetPasswordGenerateToken() throws PSQLException {
+    AwsIamAuthenticationPlugin.tokenCache.clear();
     AwsIamAuthenticationPlugin spyPlugin = Mockito.spy(new AwsIamAuthenticationPlugin(properties));
     when(spyPlugin.generateAuthenticationToken(TEST_USER, TEST_HOST, 5342, Region.US_EAST_2)).thenReturn(GENERATED_TOKEN);
     char[] actualResult = spyPlugin.getPassword(AuthenticationRequestType.CLEARTEXT_PASSWORD);

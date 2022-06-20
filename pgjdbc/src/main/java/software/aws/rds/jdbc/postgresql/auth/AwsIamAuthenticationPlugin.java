@@ -33,8 +33,7 @@ public class AwsIamAuthenticationPlugin implements AuthenticationPlugin {
   private static final int DEFAULT_TOKEN_EXPIRATION_SEC = 15 * 60; // 15 min;
 
   private static final String PROPERTY_NAME_TOKEN_EXPIRATION = "iamTokenCacheExpiration";
-  private static final ConcurrentHashMap<String, TokenInfo> tokenCache = new ConcurrentHashMap<>();
-
+  static final ConcurrentHashMap<String, TokenInfo> tokenCache = new ConcurrentHashMap<>();
   private final Properties info;
   private final String user;
   private final String hostname;
@@ -96,7 +95,7 @@ public class AwsIamAuthenticationPlugin implements AuthenticationPlugin {
     return String.format("%s:%s:%d:%s", region, hostname, port, user);
   }
 
-  protected String generateAuthenticationToken(
+  String generateAuthenticationToken(
       final String user,
       final String hostname,
       final int port,
