@@ -1,5 +1,8 @@
+/*
+ * Copyright (c) 2022, PostgreSQL Global Development Group
+ * See the LICENSE file in the project root for more information.
+ */
 package software.aws.rds.jdbc.postgresql.auth;
-
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -101,7 +104,4 @@ public class AwsIamAuthenticationPluginTest {
     char[] actualResult = spyPlugin.getPassword(AuthenticationRequestType.CLEARTEXT_PASSWORD);
     assertArrayEquals(GENERATED_TOKEN.toCharArray(), actualResult);
   }
-
 }
-
-
