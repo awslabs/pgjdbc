@@ -31,7 +31,7 @@ public class AwsIamAuthenticationPluginTest {
   private static final String CACHE_KEY = "us-east-2:test.user.us-east-2.rds.amazonaws.com:5342:testUser";
 
   @BeforeEach
-  public void setup() throws PSQLException {
+  public void initTargetPlugin() throws PSQLException {
     properties = new Properties();
     properties.setProperty(PGProperty.USER.getName(), TEST_USER);
     properties.setProperty(PGProperty.PG_HOST.getName(), TEST_HOST);
