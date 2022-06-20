@@ -31,7 +31,7 @@ public class AwsIamAuthenticationPluginTest {
   private static final String CACHE_KEY = "us-east-2:test.user.us-east-2.rds.amazonaws.com:5342:testUser";
 
   @BeforeEach
-  public void init() throws PSQLException {
+  public void setup() throws PSQLException {
     properties = new Properties();
     properties.setProperty(PGProperty.USER.getName(), TEST_USER);
     properties.setProperty(PGProperty.PG_HOST.getName(), TEST_HOST);
@@ -47,6 +47,7 @@ public class AwsIamAuthenticationPluginTest {
   public void testGetPasswordValidTokenInCache() throws PSQLException {
     AwsIamAuthenticationPlugin.tokenCache.put(CACHE_KEY, new AwsIamAuthenticationPlugin.TokenInfo(TEST_TOKEN, Instant.now().plusMillis(300000)));
     char[] actualResult = targetPlugin.getPassword(AuthenticationRequestType.CLEARTEXT_PASSWORD);
+
     assertArrayEquals(TEST_TOKEN.toCharArray(), actualResult);
   }
 
@@ -56,6 +57,7 @@ public class AwsIamAuthenticationPluginTest {
     AwsIamAuthenticationPlugin spyPlugin = Mockito.spy(targetPlugin);
     when(spyPlugin.generateAuthenticationToken(TEST_USER, TEST_HOST, 5342, Region.US_EAST_2)).thenReturn(GENERATED_TOKEN);
     char[] actualResult = spyPlugin.getPassword(AuthenticationRequestType.CLEARTEXT_PASSWORD);
+
     assertArrayEquals(GENERATED_TOKEN.toCharArray(), actualResult);
   }
 
@@ -65,6 +67,7 @@ public class AwsIamAuthenticationPluginTest {
     AwsIamAuthenticationPlugin spyPlugin = Mockito.spy(new AwsIamAuthenticationPlugin(properties));
     when(spyPlugin.generateAuthenticationToken(TEST_USER, TEST_HOST, 5342, Region.US_EAST_2)).thenReturn(GENERATED_TOKEN);
     char[] actualResult = spyPlugin.getPassword(AuthenticationRequestType.CLEARTEXT_PASSWORD);
+
     assertArrayEquals(GENERATED_TOKEN.toCharArray(), actualResult);
   }
 }
