@@ -47,7 +47,7 @@ public class AwsIamAuthenticationPluginTest {
   @Test
   public void testGetPasswordValidTokenInCache() throws PSQLException {
     AwsIamAuthenticationPlugin.tokenCache.put(CACHE_KEY, new AwsIamAuthenticationPlugin.TokenInfo(TEST_TOKEN, Instant.now().plusMillis(300000)));
-    char[] actualResult = targetPlugin.getPassword(AuthenticationRequestType.CLEARTEXT_PASSWORD);
+    final char[] actualResult = targetPlugin.getPassword(AuthenticationRequestType.CLEARTEXT_PASSWORD);
 
     assertArrayEquals(TEST_TOKEN.toCharArray(), actualResult);
   }
@@ -57,7 +57,7 @@ public class AwsIamAuthenticationPluginTest {
     AwsIamAuthenticationPlugin.tokenCache.put(CACHE_KEY, new AwsIamAuthenticationPlugin.TokenInfo(TEST_TOKEN, Instant.now().minusMillis(300000)));
     AwsIamAuthenticationPlugin spyPlugin = Mockito.spy(targetPlugin);
     when(spyPlugin.generateAuthenticationToken(TEST_USER, TEST_HOST, 5342, Region.US_EAST_2)).thenReturn(GENERATED_TOKEN);
-    char[] actualResult = spyPlugin.getPassword(AuthenticationRequestType.CLEARTEXT_PASSWORD);
+    final char[] actualResult = spyPlugin.getPassword(AuthenticationRequestType.CLEARTEXT_PASSWORD);
 
     assertArrayEquals(GENERATED_TOKEN.toCharArray(), actualResult);
     assertEquals(GENERATED_TOKEN, AwsIamAuthenticationPlugin.tokenCache.get(CACHE_KEY).getToken());
@@ -67,7 +67,7 @@ public class AwsIamAuthenticationPluginTest {
   public void testGetPasswordEmptyCache() throws PSQLException {
     AwsIamAuthenticationPlugin spyPlugin = Mockito.spy(new AwsIamAuthenticationPlugin(properties));
     when(spyPlugin.generateAuthenticationToken(TEST_USER, TEST_HOST, 5342, Region.US_EAST_2)).thenReturn(GENERATED_TOKEN);
-    char[] actualResult = spyPlugin.getPassword(AuthenticationRequestType.CLEARTEXT_PASSWORD);
+    final char[] actualResult = spyPlugin.getPassword(AuthenticationRequestType.CLEARTEXT_PASSWORD);
 
     assertArrayEquals(GENERATED_TOKEN.toCharArray(), actualResult);
     assertEquals(GENERATED_TOKEN, AwsIamAuthenticationPlugin.tokenCache.get(CACHE_KEY).getToken());

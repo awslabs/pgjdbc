@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2022, PostgreSQL Global Development Group
+ * See the LICENSE file in the project root for more information.
+ */
+
 package software.aws.rds.jdbc.postgresql.auth;
 
 import org.postgresql.PGProperty;
