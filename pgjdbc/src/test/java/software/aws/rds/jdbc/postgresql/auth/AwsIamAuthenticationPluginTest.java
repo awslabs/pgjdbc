@@ -2,10 +2,10 @@
  * Copyright (c) 2022, PostgreSQL Global Development Group
  * See the LICENSE file in the project root for more information.
  */
+
 package software.aws.rds.jdbc.postgresql.auth;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 import org.postgresql.PGProperty;
@@ -36,6 +36,7 @@ public class AwsIamAuthenticationPluginTest {
     properties.setProperty(PGProperty.USER.getName(), TEST_USER);
     properties.setProperty(PGProperty.PG_HOST.getName(), TEST_HOST);
     targetPlugin = new AwsIamAuthenticationPlugin(properties);
+    AwsIamAuthenticationPlugin.tokenCache.clear();
   }
 
   @Test
@@ -59,15 +60,16 @@ public class AwsIamAuthenticationPluginTest {
     char[] actualResult = spyPlugin.getPassword(AuthenticationRequestType.CLEARTEXT_PASSWORD);
 
     assertArrayEquals(GENERATED_TOKEN.toCharArray(), actualResult);
+    assertEquals(GENERATED_TOKEN, AwsIamAuthenticationPlugin.tokenCache.get(CACHE_KEY).getToken());
   }
 
   @Test
-  public void testGetPasswordGenerateToken() throws PSQLException {
-    AwsIamAuthenticationPlugin.tokenCache.clear();
+  public void testGetPasswordEmptyCache() throws PSQLException {
     AwsIamAuthenticationPlugin spyPlugin = Mockito.spy(new AwsIamAuthenticationPlugin(properties));
     when(spyPlugin.generateAuthenticationToken(TEST_USER, TEST_HOST, 5342, Region.US_EAST_2)).thenReturn(GENERATED_TOKEN);
     char[] actualResult = spyPlugin.getPassword(AuthenticationRequestType.CLEARTEXT_PASSWORD);
 
     assertArrayEquals(GENERATED_TOKEN.toCharArray(), actualResult);
+    assertEquals(GENERATED_TOKEN, AwsIamAuthenticationPlugin.tokenCache.get(CACHE_KEY).getToken());
   }
 }
